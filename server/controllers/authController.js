@@ -2,7 +2,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-const getJwtSecret = () => process.env.JWT_SECRET || 'hdss-dev-secret';
+const getJwtSecret = () => {
+  if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET must be configured in production');
+  }
+
+  return process.env.JWT_SECRET || 'hdss-dev-secret';
+};
 const token = (user) =>
   jwt.sign({ id: user._id, name: user.name, role: user.role, email: user.email }, getJwtSecret(), {
     expiresIn: '8h',
@@ -41,4 +47,3 @@ export async function login(req, res) {
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
 }
-

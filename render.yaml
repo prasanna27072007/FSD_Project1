@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: hdss-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOW_MEMORY_FALLBACK
+        value: "false"
+      - key: AI_MODE
+        value: mock
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_URL
+        sync: false

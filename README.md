@@ -70,3 +70,12 @@ server/     Express MVC API, MongoDB models, AI service, Socket.io
 
 ## Production notes
 Use a managed MongoDB instance, HTTPS, secret rotation, audit logging, stronger request schemas, encrypted PHI storage, clinical validation, and a validated medical knowledge source before any real clinical deployment.
+
+## Render and Vercel deployment
+`render.yaml` defines the Express API as a Render Docker web service. `client/vercel.json` configures the Vite single-page app for Vercel.
+
+1. Import this GitHub repository in Render as a Blueprint and create the `hdss-api` service. Set the prompted `MONGO_URI` to a dedicated MongoDB database reachable by Render, `JWT_SECRET` to a new random secret, and `CLIENT_URL` to the deployed Vercel site origin. The service starts with mock AI mode and fictional demo data. Never use real patient data for this demo.
+2. Import the same repository in Vercel and set the project root directory to `client`. Set the build-time environment variable `VITE_API_URL` to the Render API URL ending in `/api` (for example, `https://hdss-api.onrender.com/api`), then deploy.
+3. Copy the resulting Vercel production origin into Render's `CLIENT_URL` environment variable and redeploy the API. This allows the browser app to call the API and connect to its Socket.IO endpoint.
+
+Keep database and JWT secrets in the hosting provider's environment settings, not in Git. Render's free web service may sleep while idle and take longer to respond on the first request. For a production healthcare service, select an appropriate paid service and complete the security, privacy, clinical validation, and compliance work described above.
