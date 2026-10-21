@@ -32,7 +32,7 @@ export default function PatientDetail() {
   });
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000');
+    const socket = io(window.location.origin);
     socket.emit('join:patient', id);
     socket.on('vitals:update', (payload) => {
       if (String(payload.patient?._id || payload.patient) === String(id)) {
