@@ -1,12 +1,20 @@
-FROM node:24-slim
-
-ENV NODE_ENV=production
-ENV PORT=8080
+FROM node:22-bookworm-slim
 
 WORKDIR /app
+
+# Install trusted CA certificates
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json ./
+
 RUN npm ci --omit=dev
+
 COPY . .
 
-EXPOSE 8080
+ENV NODE_ENV=production
+
+EXPOSE 5001
+
 CMD ["npm", "start"]
